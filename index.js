@@ -24,17 +24,24 @@ async function run(){
             res.send(phoneInfo);
         })
 
+        app.get('/phoneInfoCollection', async(req, res) => {
+            const email = req.query.email;
+            const query = {sellerEmail: email};
+            const phoneInfo = await phoneInfoCollection.find(query).toArray();
+            res.send(phoneInfo);
+        })
+
         app.post('/bookings', async(req, res) =>{
             const booking = req.body
             const result = await bookingCollection.insertOne(booking);
             res.send(result);
         })
 
-        app.get('/bookings', async(req, res) =>{
+        app.get('/bookings', async (req, res) =>{
             const email = req.query.email;
             const query = {email: email};
-            const result = await bookingCollection.find(query).toArray;
-            res.send(result);
+            const bookings = await bookingCollection.find(query).toArray();
+            res.send(bookings);
         })
 
         app.post('/phoneInfoCollection', async(req, res) =>{
