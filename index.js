@@ -29,6 +29,12 @@ async function run(){
             const result = await bookingCollection.insertOne(booking);
             res.send(result);
         })
+
+        app.post('/phoneInfoCollection', async(req, res) =>{
+            const added = req.body
+            const result = await phoneInfoCollection.insertOne(added);
+            res.send(result);
+        })
     }
     finally{
 
