@@ -25,9 +25,17 @@ async function run(){
             res.send(phoneInfo);
         })
 
-        app.get('/phoneInfoCollectionm', async(req, res) => {
+        app.get('/phoneInfoCollection', async(req, res) => {
             const email = req.query.email;
             const query = {sellerEmail: email};
+            const phoneInfo = await phoneInfoCollection.find(query).toArray();
+            res.send(phoneInfo);
+        })
+        
+        app.get('/phoneInfoCollection/:os/:device', async(req, res) => {
+            const os = req.params.os;
+            const device = req.params.device;
+            const query = {os: os, deviceType: device};
             const phoneInfo = await phoneInfoCollection.find(query).toArray();
             res.send(phoneInfo);
         })
@@ -54,6 +62,11 @@ async function run(){
         app.post('/users', async (req, res) =>{
             const user = req.body;
             const result = await userCollection.insertOne(user);
+            res.send(result);
+        } )
+        app.get('/users', async (req, res) =>{
+            const query = {};
+            const result = await userCollection.find(query).toArray();
             res.send(result);
         } )
     }
