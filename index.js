@@ -25,13 +25,6 @@ async function run(){
             res.send(phoneInfo);
         })
 
-        app.get('/phoneInfoCollection', async(req, res) => {
-            const email = req.query.email;
-            const query = {sellerEmail: email};
-            const phoneInfo = await phoneInfoCollection.find(query).toArray();
-            res.send(phoneInfo);
-        })
-        
         app.get('/phoneInfoCollection/:os/:device', async(req, res) => {
             const os = req.params.os;
             const device = req.params.device;
@@ -65,6 +58,14 @@ async function run(){
             const result = await phoneInfoCollection.insertOne(added);
             res.send(result);
         })
+        
+        app.get('/allPhoneInfo', async (req, res) =>{
+            const email = req.query.email;
+            const query = {sellerEmail: email};
+            const result = await phoneInfoCollection.find(query).toArray();
+            res.send(result);
+        })
+        
 
         app.post('/users', async (req, res) =>{
             const user = req.body;
