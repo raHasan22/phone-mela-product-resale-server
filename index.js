@@ -40,6 +40,13 @@ async function run(){
             res.send(phoneInfo);
         })
 
+        app.get('/phoneInfoCollection/:device', async(req, res) => {
+            const device = req.params.device;
+            const query = {deviceType: device};
+            const phoneInfo = await phoneInfoCollection.find(query).toArray();
+            res.send(phoneInfo);
+        })
+
         app.post('/bookings', async(req, res) =>{
             const booking = req.body
             const result = await bookingCollection.insertOne(booking);
