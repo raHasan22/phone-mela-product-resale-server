@@ -36,6 +36,7 @@ async function run(){
         const phoneInfoCollection = client.db('resellService').collection('phoneInfo');
         const bookingCollection = client.db('resellService').collection('bookingInfo');
         const userCollection = client.db('resellService').collection('userInfo');
+        const reportCollection = client.db('resellService').collection('report');
 
         app.get('/phoneInfoCollection', async(req, res) => {
             const query = {};
@@ -77,6 +78,20 @@ async function run(){
             res.send(bookings);
         })
 
+        app.delete('/bookings/delete/:id', verifyJWT, async (req, res) =>{
+            const decodedEmail = req.decoded.email;
+            const query = {email: decodedEmail};
+            const user = await userCollection.findOne(query);
+
+            if(user?.userType !== "Admin" && user?.userType !== "Seller" && user?.userType !== "Buyer"){
+                return res.status(403).send({message: 'forbidden'});
+            }
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await bookingCollection.deleteOne(filter);
+            res.send(result);
+        } )
+
         app.post('/phoneInfoCollection', async(req, res) =>{
             const added = req.body
             const result = await phoneInfoCollection.insertOne(added);
@@ -95,6 +110,20 @@ async function run(){
             const result = await phoneInfoCollection.find(query).toArray();
             res.send(result);
         })
+
+        app.delete('/phones/delete/:id', verifyJWT, async (req, res) =>{
+            const decodedEmail = req.decoded.email;
+            const query = {email: decodedEmail};
+            const user = await userCollection.findOne(query);
+
+            if(user?.userType !== "Admin" && user?.userType !== "Seller"){
+                return res.status(403).send({message: 'forbidden'});
+            }
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await phoneInfoCollection.deleteOne(filter);
+            res.send(result);
+        } )
         
         app.get('/jwt', async(req, res) =>{
             const email = req.query.email;
@@ -110,6 +139,18 @@ async function run(){
         app.post('/users', async (req, res) =>{
             const user = req.body;
             const result = await userCollection.insertOne(user);
+            res.send(result);
+        } )
+
+        app.post('/report', async (req, res) =>{
+            const report = req.body;
+            const result = await reportCollection.insertOne(report);
+            res.send(result);
+        } )
+
+        app.get('/report', async (req, res) =>{
+            const query = {};
+            const result = await reportCollection.find(query).toArray();
             res.send(result);
         } )
 
@@ -136,6 +177,20 @@ async function run(){
         app.get('/sellers', async (req, res) =>{
             const query = {userType: "Seller"};
             const result = await userCollection.find(query).toArray();
+            res.send(result);
+        } )
+
+        app.delete('/users/delete/:id', verifyJWT, async (req, res) =>{
+            const decodedEmail = req.decoded.email;
+            const query = {email: decodedEmail};
+            const user = await userCollection.findOne(query);
+
+            if(user?.userType !== "Admin"){
+                return res.status(403).send({message: 'forbidden'});
+            }
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await userCollection.deleteOne(filter);
             res.send(result);
         } )
 
